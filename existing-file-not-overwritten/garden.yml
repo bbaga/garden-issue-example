@@ -1,0 +1,21 @@
+kind: Module
+
+# The type of this module.
+type: container
+
+# The name of this module.
+name: service
+
+services:
+    - name: backend
+      devMode:
+          sync:
+              - target: /usr/share/nginx/html/hello-backend
+                source: hello-backend
+      ports:
+          - name: http
+            containerPort: 80
+            servicePort: 80
+      ingresses:
+          - path: /hello-backend
+            port: http
