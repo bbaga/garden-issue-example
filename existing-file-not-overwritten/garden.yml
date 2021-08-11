@@ -7,15 +7,16 @@ type: container
 name: service
 
 services:
-    - name: backend
-      devMode:
-          sync:
-              - target: /usr/share/nginx/html/hello-backend
-                source: hello-backend
-      ports:
-          - name: http
-            containerPort: 80
-            servicePort: 80
-      ingresses:
-          - path: /hello-backend
-            port: http
+  - name: backend
+    devMode:
+      sync:
+        - target: /usr/share/nginx/html/hello-backend
+          source: hello-backend
+          mode: one-way-replica
+    ports:
+      - name: http
+        containerPort: 80
+        servicePort: 80
+    ingresses:
+      - path: /hello-backend
+        port: http
