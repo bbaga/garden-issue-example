@@ -1,0 +1,40 @@
+kind: Project
+name: using-variables
+environments:
+  - name: default
+providers:
+  - name: local-kubernetes
+variables:
+  hostname: local
+  database-password: password
+  envVars:
+    LOG_LEVEL: debug
+    SOME_OTHER_VAR: something
+
+---
+
+# Copied example from: https://docs.garden.io/using-garden/variables-and-templating#module-variables
+# my-service/garden.yml
+kind: Module
+name: my-service
+type: container
+variables:
+  # This overrides the project-level hostname variable
+  hostname: my-service.${var.hostname}
+  # You can specify maps or lists as variables
+  envVars:
+    LOG_LEVEL: debug
+    DATABASE_PASSWORD: ${var.database-password}
+services:
+  - name: my-service
+    ports:
+      - name: http
+        containerPort: 80
+        servicePort: 80
+    ingresses:
+      - path: /hello-backend
+        port: http
+        # This resolves to the hostname variable set above, not the project-level hostname variable
+        hostname: ${var.hostname}
+    # Referencing the above envVar module variable
+    env: ${var.envVars}
